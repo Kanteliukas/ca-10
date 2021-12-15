@@ -1,6 +1,7 @@
 """Program generates or validates LT personal code"""
 
-import random, datetime
+import random
+import datetime
 
 
 def extract_numbers(personal_code):
@@ -61,22 +62,22 @@ def get_gender():
 
 def get_birth_date():
     day_of_birth = input("Įveskite gimimo datą formatu YYYY-MM-DD: ")
-    format = "%Y-%m-%d"
+    _format = "%Y-%m-%d"
     try:
-        datetime.datetime.strptime(day_of_birth, format)
+        datetime.datetime.strptime(day_of_birth, _format)
         return day_of_birth
     except ValueError as e:
         raise e
 
 
 def generate_personal_code():
-    incorrect_day_of_birth = f"Neteisingas įvestos datos formatas"
+
     gender = get_gender()
     if gender == "moteris" or gender == "vyras":
         try:
             day_of_birth = get_birth_date()
         except ValueError as e:
-            return incorrect_day_of_birth
+            raise e
 
         day_of_birth = str(day_of_birth)
         year_of_birth = day_of_birth[:4]
@@ -163,13 +164,17 @@ def check_personal_code():
 
 
 def main():
+    incorrect_day_of_birth = f"Neteisingas įvestos datos formatas"
     choice = input("Įveskite: ar norite tikrinti asmens kodą, ar generuoti? ")
     choice = choice.lower()
     if choice == "tikrinti":
         is_valid = check_personal_code()
         return is_valid
     elif choice == "generuoti":
-        new_personal_code = generate_personal_code()
-        return new_personal_code
+        try:
+            new_personal_code = generate_personal_code()
+            return new_personal_code
+        except ValueError:
+            return incorrect_day_of_birth
     else:
         print("Neteisingai įvedėte užduoties pavadinimą, bandykite dar kartą")
